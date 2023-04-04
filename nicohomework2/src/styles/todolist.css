@@ -1,0 +1,46 @@
+#todos-container {
+    padding: 2%
+}
+
+#add-item {
+    margin-left: 1%
+}
+
+#cancel-item {
+    margin-left: 1%
+}
+
+input[type=checkbox] {
+    margin-right: 1%;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid black;
+}
+input[type=checkbox]:checked {
+    appearance: auto;
+    clip-path: circle(50% at 50% 50%);
+    background-color: blue;
+  }
+
+li {
+    list-style-type: none;
+    border-bottom: 1px solid #ddd;
+    width: 75%;
+    padding: 2%;
+    margin: auto;
+}
+
+#add-icon {
+    color: #2d3e50;
+}
+
+#add-icon:hover {
+    cursor: pointer;
+}
+
+h1 {
+    padding-left: 8%;
+}
