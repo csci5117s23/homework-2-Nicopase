@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { useUser} from "@clerk/nextjs";
+import { useRouter } from 'next/router';
 
 export default function Todos() {
     const [todoList, setTodoList] = useState([]);
     const [newTodoItem, setNewItem] = useState("");
     const [inputVisible, setInputVisible] = useState(false);
     const [iconVisible, setIconVisible] = useState(true);
+    const { user } = useUser();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user) {
+        router.replace("/");
+        }
+    }, [user]);
 
     const listTodoItems = todoList.map((item, index) => 
         <li key={index}>
