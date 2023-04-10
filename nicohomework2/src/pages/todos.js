@@ -12,24 +12,84 @@ export default function Todos() {
     const { user } = useUser();
     const router = useRouter();
 
+    const API_ENDPOINT = 'https://backend-w2cd.api.codehooks.io/dev/todos';
+    const API_ENDPOINT_GET = 'https://backend-w2cd.api.codehooks.io/dev/todos?userId=';
+    const API_KEY = "bb830a11-6df4-4ad7-a7cb-ad384a7f8144"
+
     useEffect(() => {
         if (!user) {
         router.replace("/");
+        } else {
+            fetchTodos();
         }
     }, [user]);
+
+    async function fetchTodos() {
+        try {
+        const response = await fetch(API_ENDPOINT_GET+user.id, {
+            method: 'GET',
+            headers: {
+                'x-apikey': API_KEY,
+                // Add any other headers you need here
+            },
+            });
+          const todos = await response.json();
+          console.log(todos)
+          setTodoList(todos);
+        } catch (error) {
+          console.error('Failed to fetch todos:', error);
+        }
+    }
 
     const listTodoItems = todoList.map((item, index) => 
         <li key={index}>
             <input type="checkbox" id={`item${index}`} />
-            {item}
+            {item.description}
         </li>
     )
     
-    function addTodoItem(){
-        setTodoList(todoList.concat(newTodoItem));
-        setNewItem("");
-        setInputVisible(false);
-        setIconVisible(true);
+    // function addTodoItem(){
+    //     setTodoList(todoList.concat(newTodoItem));
+    //     setNewItem("");
+    //     setInputVisible(false);
+    //     setIconVisible(true);
+    // }
+
+    async function addTodoItem() {
+        try {
+          const newTodo = {
+            userId: user.id,
+            description: newTodoItem,
+            completed: false,
+          };
+          console.log(JSON.stringify(newTodo))
+      
+          const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-apikey': API_KEY,
+              // Add any other headers you need here
+            },
+            body: JSON.stringify(newTodo),
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to create todo');
+          }
+      
+          const addedTodo = await response.json();
+      
+          // Update the todo list with the newly added todo item
+          setTodoList([...todoList, addedTodo]);
+      
+          // Clear the input and hide it
+          setNewItem('');
+          setInputVisible(false);
+          setIconVisible(true);
+        } catch (error) {
+          console.error('Failed to create todo:', error);
+        }
     }
 
     function toggleVisible() {
