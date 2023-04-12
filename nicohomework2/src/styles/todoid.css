@@ -1,5 +1,5 @@
 #todo-container {
-    padding: 2%
+    padding: 2%;
 }
 
 #check-item {
@@ -8,14 +8,15 @@
     width: 50%;
     margin: auto;
     padding: 2%;
+    margin-bottom: 5%;
 }
 
 #update-item {
-    margin-left: 2%
+    margin-left: 2%;
 }
 
 #cancel-update {
-    margin-left: 2%
+    margin-left: 2%;
 }
 
 
@@ -35,6 +36,7 @@
 
 .icon {
     float: right;
+    padding-right: 10%;
 }
 
 .icon:hover {
