@@ -147,7 +147,9 @@ export default function Id() {
                <button id="cancel-update" className="pure-button" onClick={cancelEdit}>Cancel</button>
               </>
             ) : (
-              todoItem.description
+            <span id="item-description">
+              {todoItem.description}
+            </span>
             )}
             <span class="icon" onClick={() => deleteTodoItem(todoItem._id)}>
                 <FontAwesomeIcon icon={faTrash} size="lg"/>

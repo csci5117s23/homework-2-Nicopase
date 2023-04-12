@@ -10,6 +10,14 @@
     margin-left: 1%
 }
 
+.truncate {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
 input[type=checkbox] {
     margin-right: 1%;
     width: 1em;
@@ -31,6 +39,7 @@ li {
     width: 75%;
     padding: 2%;
     margin: auto;
+    position: relative;
 }
 
 #add-icon {

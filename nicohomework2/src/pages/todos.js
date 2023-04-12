@@ -48,7 +48,9 @@ export default function Todos() {
              id={`item-${item._id}`} 
              onChange={() => updateTodoItem(item._id, !item.completed)}
              />
-            <Link href={`/todo/${item._id}`}>{item.description}</Link>
+            <Link href={`/todo/${item._id}`}>
+                <span class="truncate">{item.description}</span>
+            </Link>
         </li>
     )
 

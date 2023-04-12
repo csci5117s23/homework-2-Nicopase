@@ -43,7 +43,7 @@ export default function Done() {
               checked={item.completed}
              onChange={() => updateCompletion(item._id, !item.completed)}
              />
-            {item.description}
+            <span class="truncate">{item.description}</span>
         </li>
     )
 
