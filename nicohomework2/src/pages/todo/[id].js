@@ -130,33 +130,39 @@ export default function Id() {
     return <>
     {todoItem && (
       <div id="todo-container">
-        <div id="check-item">
-            <input
-            type="checkbox"
-            id={`item-${todoItem._id}`}
-            onChange={() => updateItemCompletion(todoItem._id, !todoItem.completed)}
-            />
-           {isEditing ? (
-            <>
-              <input
-                type="text"
-                value={todoItem.description}
-                onChange={handleDescriptionChange}
-              />
-               <button id="update-item" className="pure-button" onClick={updateDescription}>Update Todo Item</button>
-               <button id="cancel-update" className="pure-button" onClick={cancelEdit}>Cancel</button>
-              </>
-            ) : (
-            <span id="item-description">
-              {todoItem.description}
-            </span>
-            )}
-            <span class="icon" onClick={() => deleteTodoItem(todoItem._id)}>
-                <FontAwesomeIcon icon={faTrash} size="lg"/>
-            </span>
-            <span class="icon"  onClick={() => setIsEditing(!isEditing)}>
-                <FontAwesomeIcon icon={faPenToSquare} size="lg" />
-            </span>
+        <div id="check-item" class="pure-g">
+            <div class="pure-u-2-24">
+                <input
+                type="checkbox"
+                id={`item-${todoItem._id}`}
+                onChange={() => updateItemCompletion(todoItem._id, !todoItem.completed)}
+                />
+            </div>
+            <div class="pure-u-15-24" id="description-container">
+                {isEditing ? (
+                    <>
+                    <input
+                        type="text"
+                        value={todoItem.description}
+                        onChange={handleDescriptionChange}
+                    />
+                    <button id="update-item" className="pure-button" onClick={updateDescription}>Update Todo Item</button>
+                    <button id="cancel-update" className="pure-button" onClick={cancelEdit}>Cancel</button>
+                    </>
+                    ) : (
+                    <span id="item-description">
+                    {todoItem.description}
+                    </span>
+                    )}
+            </div>
+            <div class="pure-u-5-24">
+                <span class="icon" onClick={() => deleteTodoItem(todoItem._id)}>
+                    <FontAwesomeIcon icon={faTrash} size="lg"/>
+                </span>
+                <span class="icon"  onClick={() => setIsEditing(!isEditing)}>
+                    <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+                </span>
+            </div>
         </div>
         <div>
             <button className="pure-button"><Link href="/todos">Take me to my to-do list</Link></button>

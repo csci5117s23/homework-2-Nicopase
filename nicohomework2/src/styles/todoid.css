@@ -23,11 +23,20 @@
     margin-left: 1%
 }
 
+#description-container {
+    position: relative;
+    padding: 0 8px;
+}
+  
+#description-container span#item-description {
+    display: inline-block;
+    max-width: 100%;
+}
+
 .icon {
-   float: right;
-   margin-right: 2%;
+    float: right;
 }
 
 .icon:hover {
-   cursor: pointer;
+    cursor: pointer;
  }
