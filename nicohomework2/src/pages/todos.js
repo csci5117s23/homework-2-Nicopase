@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import { useUser} from "@clerk/nextjs";
 import { useRouter } from 'next/router';
+import Link from 'next/link'
 
 export default function Todos() {
     const [todoList, setTodoList] = useState([]);
@@ -34,26 +35,24 @@ export default function Todos() {
             },
             });
           const todos = await response.json();
-          console.log(todos)
-          setTodoList(todos);
+          const sortedTodos = todos.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setTodoList(sortedTodos);
         } catch (error) {
           console.error('Failed to fetch todos:', error);
         }
     }
 
-    const listTodoItems = todoList.map((item, index) => 
-        <li key={index}>
-            <input type="checkbox" id={`item${index}`} />
-            {item.description}
+    const listTodoItems = todoList.map((item) => 
+        <li key={item._id}>
+            <input type="checkbox"
+             id={`item-${item._id}`} 
+             onChange={() => updateTodoItem(item._id, !item.completed)}
+             />
+            <Link href={`/todo/${item._id}`}>{item.description}</Link>
         </li>
     )
-    
-    // function addTodoItem(){
-    //     setTodoList(todoList.concat(newTodoItem));
-    //     setNewItem("");
-    //     setInputVisible(false);
-    //     setIconVisible(true);
-    // }
 
     async function addTodoItem() {
         try {
@@ -61,6 +60,7 @@ export default function Todos() {
             userId: user.id,
             description: newTodoItem,
             completed: false,
+            createdAt: new Date(),
           };
           console.log(JSON.stringify(newTodo))
       
@@ -78,10 +78,10 @@ export default function Todos() {
             throw new Error('Failed to create todo');
           }
       
-          const addedTodo = await response.json();
-      
+          const todos = await response.json();
+
           // Update the todo list with the newly added todo item
-          setTodoList([...todoList, addedTodo]);
+          setTodoList([ todos, ...todoList]);
       
           // Clear the input and hide it
           setNewItem('');
@@ -89,6 +89,34 @@ export default function Todos() {
           setIconVisible(true);
         } catch (error) {
           console.error('Failed to create todo:', error);
+        }
+    }
+
+    async function updateTodoItem(id, completed) {
+        console.log("this is id: " + id);
+        console.log("this is completed: " + JSON.stringify({completed}));
+        try {
+            const response = await fetch(`${API_ENDPOINT}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-apikey': API_KEY,
+                },
+                body: JSON.stringify({ completed }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to update todo');
+            }
+    
+            const updatedTodo = await response.json();
+            console.log("this is updatedTodo: " + JSON.stringify(updatedTodo))
+
+            if (completed) {
+                setTodoList(todoList.filter((todo) => todo._id !== id));
+            }
+        } catch (error) {
+            console.error('Failed to update todo:', error);
         }
     }
 
@@ -123,6 +151,9 @@ export default function Todos() {
         <div>
             <ul> {listTodoItems}</ul>
         </div>
+        <div>
+        <button class="pure-button"> <Link href="done/">Take me to my done items</Link></button>
+    </div>
     </div>
     </>
 }

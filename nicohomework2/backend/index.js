@@ -11,17 +11,36 @@ const todo = yup.object().shape({
     id: yup.string().required(),
     userId: yup.string().required(),
     description: yup.string().required(),
-    completed: yup.boolean().required()
-  });
+    completed: yup.boolean().required(),
+    createdAt: yup.date().required(),
+});
 
 async function getTodos(req, res) {
     const conn = await Datastore.open();
     const userId = req.query.userId;
+    console.log("this is requested userId: " + userId)
     const options = {
-        filter: {"userId": userId}
+        filter: {"userId": userId, "completed": false }
     }
-    console.log(req.body)
-    conn.getMany('todos', options).json(res);
+    conn.getMany('todos',options).json(res);
+}
+
+async function getTodoItem(req, res) {
+    const conn = await Datastore.open();
+    const id = req.params.id;
+    console.log("this is requested id: " + id)
+    const data = await conn.getOne('todos',id);
+    res.json(data);
+}
+
+async function getDoneTodos(req, res) {
+    const conn = await Datastore.open();
+    const userId = req.query.userId;
+    console.log("this is requested userId: " + userId)
+    const options = {
+        filter: {"userId": userId, "completed": true }
+    }
+    conn.getMany('todos',options).json(res);
 }
 
 async function createTodo(req, res) {
@@ -31,19 +50,37 @@ async function createTodo(req, res) {
     res.json(newTodo);
 }
 
-async function deleteTodos(req, res) {
+async function updateCompletion(req, res) {
     const conn = await Datastore.open();
-    const userId = req.query.userId;
-    const options = {
-        filter: {"userId": userId}
-    }
-    const data = await conn.removeMany('customer', options);
-    res.json(data);
+    const { completed } = req.body;
+    const id = req.params.id;
+    const updatedTodo = await conn.updateOne("todos", id, { completed });
+    res.json(updatedTodo);
+}
+
+async function updateDescription(req, res) {
+    const conn = await Datastore.open();
+    const { description } = req.body;
+    const id = req.params.id;
+    const updatedTodo = await conn.updateOne("todos", id, { description });
+    res.json(updatedTodo);
+}
+
+async function deleteTodo(req, res) {
+    const conn = await Datastore.open();
+    const itemId = req.params.itemId;
+    console.log("this is requested id: " + itemId);
+    const deletedTodo = await conn.removeOne('todos', itemId);
+    res.json(deletedTodo);
 }
 
 app.get("/todos", getTodos);
 app.post("/todos", createTodo);
-//app.delete('/deleteTodo', deleteTodos);
+app.get("/done", getDoneTodos);
+app.put("/todos/:id", updateCompletion);
+app.get("/todo/:id", getTodoItem);
+app.put("/todo/:id", updateDescription);
+app.delete("/todo/:itemId", deleteTodo);
 
 // Use Crudlify to create a REST API for any collection
 crudlify(app, { todo });

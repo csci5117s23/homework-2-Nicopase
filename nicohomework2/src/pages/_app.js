@@ -1,14 +1,16 @@
 import {
   ClerkProvider,
+  ClerkLoaded,
   useUser,
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
-  RedirectToSignIn
 } from "@clerk/nextjs";
 import '@/styles/todolist.css'
 import '@/styles/globals.css'
+import '@/styles/todoid.css'
+import '@/styles/404.css'
 import 'purecss';
 
 function Header() {
@@ -44,8 +46,10 @@ function Header() {
 export default function App({ Component, pageProps }) {
   return (
     <ClerkProvider {...pageProps}>
-      <Header />
-      <Component {...pageProps} />
+       <ClerkLoaded>
+        <Header />
+        <Component {...pageProps} />
+      </ClerkLoaded>
     </ClerkProvider>
   );
 

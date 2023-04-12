@@ -1,0 +1,33 @@
+#todo-container {
+    padding: 2%
+}
+
+#check-item {
+    border:1px solid black;
+    border-radius: 10px;
+    width: 50%;
+    margin: auto;
+    padding: 2%;
+}
+
+#update-item {
+    margin-left: 2%
+}
+
+#cancel-update {
+    margin-left: 2%
+}
+
+
+#check-item input {
+    margin-left: 1%
+}
+
+.icon {
+   float: right;
+   margin-right: 2%;
+}
+
+.icon:hover {
+   cursor: pointer;
+ }
