@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
-import { useUser} from "@clerk/nextjs";
+import { useUser, useAuth} from "@clerk/nextjs";
 import { useRouter } from 'next/router';
 import Link from 'next/link'
 
@@ -11,11 +11,11 @@ export default function Todos() {
     const [inputVisible, setInputVisible] = useState(false);
     const [iconVisible, setIconVisible] = useState(true);
     const { user } = useUser();
+    const { getToken } = useAuth();
     const router = useRouter();
 
     const API_ENDPOINT = 'https://backend-w2cd.api.codehooks.io/dev/todos';
     const API_ENDPOINT_GET = 'https://backend-w2cd.api.codehooks.io/dev/todos?userId=';
-    const API_KEY = "bb830a11-6df4-4ad7-a7cb-ad384a7f8144"
 
     useEffect(() => {
         if (!user) {
@@ -26,13 +26,11 @@ export default function Todos() {
     }, [user]);
 
     async function fetchTodos() {
+        const authToken = await getToken({ template: "codehooks" });
         try {
         const response = await fetch(API_ENDPOINT_GET+user.id, {
             method: 'GET',
-            headers: {
-                'x-apikey': API_KEY,
-                // Add any other headers you need here
-            },
+            headers: {'Authorization': 'Bearer ' + authToken}
             });
           const todos = await response.json();
           const sortedTodos = todos.sort(
@@ -55,6 +53,7 @@ export default function Todos() {
     )
 
     async function addTodoItem() {
+        const authToken = await getToken({ template: "codehooks" });
         try {
           const newTodo = {
             userId: user.id,
@@ -67,9 +66,8 @@ export default function Todos() {
           const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'x-apikey': API_KEY,
-              // Add any other headers you need here
+                'Authorization': 'Bearer ' + authToken,
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newTodo),
           });
@@ -95,12 +93,13 @@ export default function Todos() {
     async function updateTodoItem(id, completed) {
         console.log("this is id: " + id);
         console.log("this is completed: " + JSON.stringify({completed}));
+        const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-apikey': API_KEY,
+                    'Authorization': 'Bearer ' + authToken,
                 },
                 body: JSON.stringify({ completed }),
             });

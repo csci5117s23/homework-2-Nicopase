@@ -6,6 +6,7 @@
 import {app, Datastore} from 'codehooks-js'
 import {crudlify} from 'codehooks-crudlify'
 import * as yup from 'yup';
+import jwtDecode from 'jwt-decode';
 
 const todo = yup.object().shape({
     id: yup.string().required(),
@@ -14,6 +15,22 @@ const todo = yup.object().shape({
     completed: yup.boolean().required(),
     createdAt: yup.date().required(),
 });
+
+const userAuth = async (req, res, next) => {
+    try {
+      const { authorization } = req.headers;
+      if (authorization) {
+        const token = authorization.replace('Bearer ','');
+        // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
+        const token_parsed = jwtDecode(token);
+        req.user_token = token_parsed;
+      }
+      next();
+    } catch (error) {
+      next(error);
+    } 
+  }
+app.use(userAuth)
 
 async function getTodos(req, res) {
     const conn = await Datastore.open();

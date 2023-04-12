@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,6 +10,7 @@ export default function Id() {
     const [todoItem, setTodoItem] = useState();
     const [isEditing, setIsEditing] = useState(false);
     const { user } = useUser();
+    const { getToken } = useAuth();
     const router = useRouter();
 
     const { id } = router.query;
@@ -35,13 +36,11 @@ export default function Id() {
     }
 
     async function fetchTodos() {
+        const authToken = await getToken({ template: "codehooks" });
         try {
         const response = await fetch(API_ENDPOINT+id, {
             method: 'GET',
-            headers: {
-                'x-apikey': API_KEY,
-                // Add any other headers you need here
-            },
+            headers: {'Authorization': 'Bearer ' + authToken}
             });
           const todo = await response.json();
           console.log(todo)
@@ -54,12 +53,13 @@ export default function Id() {
     async function updateItemCompletion(id, completed) {
         console.log("this is id: " + id);
         console.log("this is completed: " + JSON.stringify({completed}));
+        const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT_COMPLETED}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-apikey': API_KEY,
+                    'Authorization': 'Bearer ' + authToken,
                 },
                 body: JSON.stringify({ completed }),
             });
@@ -79,12 +79,13 @@ export default function Id() {
     }
 
     async function updateDescription() {
+        const authToken = await getToken({ template: "codehooks" });
         try {
           const response = await fetch(API_ENDPOINT+id, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
-              'x-apikey': API_KEY,
+              'Authorization': 'Bearer ' + authToken,
             },
             body: JSON.stringify({ description: todoItem.description }),
           });
@@ -105,12 +106,11 @@ export default function Id() {
     }
 
     async function deleteTodoItem(itemId) {
+        const authToken = await getToken({ template: "codehooks" });
         try {
           const response = await fetch(`${API_ENDPOINT}${itemId}`, {
             method: 'DELETE',
-            headers: {
-              'x-apikey': API_KEY,
-            },
+            headers: {'Authorization': 'Bearer ' + authToken},
           });
       
           if (!response.ok) {

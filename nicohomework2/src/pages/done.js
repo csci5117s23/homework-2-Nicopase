@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function Done() {
     const [todoList, setTodoList] = useState([]);
     const { user } = useUser();
+    const { getToken } = useAuth();
     const router = useRouter();
 
     const API_ENDPOINT = 'https://backend-w2cd.api.codehooks.io/dev/done';
     const API_ENDPOINT_COMPLETED = 'https://backend-w2cd.api.codehooks.io/dev/todos';
     const API_ENDPOINT_GET = 'https://backend-w2cd.api.codehooks.io/dev/done?userId=';
-    const API_KEY = "bb830a11-6df4-4ad7-a7cb-ad384a7f8144"
 
     useEffect(() => {
         if (!user) {
@@ -22,13 +22,11 @@ export default function Done() {
     }, [user]);
 
     async function fetchTodos() {
+        const authToken = await getToken({ template: "codehooks" });
         try {
         const response = await fetch(API_ENDPOINT_GET+user.id, {
             method: 'GET',
-            headers: {
-                'x-apikey': API_KEY,
-                // Add any other headers you need here
-            },
+            headers: {'Authorization': 'Bearer ' + authToken}
             });
           const todos = await response.json();
           console.log(todos)
@@ -52,12 +50,13 @@ export default function Done() {
     async function updateCompletion(id, completed) {
         console.log("this is id: " + id);
         console.log("this is completed: " + JSON.stringify({completed}));
+        const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT_COMPLETED}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-apikey': API_KEY,
+                    'Authorization': 'Bearer ' + authToken
                 },
                 body: JSON.stringify({ completed }),
             });
