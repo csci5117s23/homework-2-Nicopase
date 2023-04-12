@@ -149,11 +149,11 @@ export default function Id() {
             ) : (
               todoItem.description
             )}
-            <span class="icon"  onClick={() => setIsEditing(!isEditing)}>
-                <FontAwesomeIcon icon={faPenToSquare} size="lg" />
-            </span>
             <span class="icon" onClick={() => deleteTodoItem(todoItem._id)}>
                 <FontAwesomeIcon icon={faTrash} size="lg"/>
+            </span>
+            <span class="icon"  onClick={() => setIsEditing(!isEditing)}>
+                <FontAwesomeIcon icon={faPenToSquare} size="lg" />
             </span>
         </div>
         <div>
