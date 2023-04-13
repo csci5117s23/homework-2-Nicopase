@@ -17,7 +17,6 @@ export default function Id() {
 
     const API_ENDPOINT = 'https://backend-w2cd.api.codehooks.io/dev/todo/';
     const API_ENDPOINT_COMPLETED = 'https://backend-w2cd.api.codehooks.io/dev/todos';
-    const API_KEY = "bb830a11-6df4-4ad7-a7cb-ad384a7f8144"
 
     useEffect(() => {
         if (!user) {
@@ -43,7 +42,7 @@ export default function Id() {
             headers: {'Authorization': 'Bearer ' + authToken}
             });
           const todo = await response.json();
-          console.log(todo)
+        //   console.log(todo)
           setTodoItem(todo);
         } catch (error) {
           console.error('Failed to fetch todos:', error);
@@ -51,8 +50,8 @@ export default function Id() {
     }
 
     async function updateItemCompletion(id, completed) {
-        console.log("this is id: " + id);
-        console.log("this is completed: " + JSON.stringify({completed}));
+        // console.log("this is id: " + id);
+        // console.log("this is completed: " + JSON.stringify({completed}));
         const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT_COMPLETED}/${id}`, {
@@ -69,10 +68,7 @@ export default function Id() {
             }
     
             const updatedTodo = await response.json();
-            console.log("this is updatedTodo: " + JSON.stringify(updatedTodo))
-    
-            // // Update the todo list with the updated todo item
-            // setTodoList(todoList.map(todo => (todo.id === updatedTodo.id ? updatedTodo : todo)));
+
         } catch (error) {
             console.error('Failed to update todo:', error);
         }
@@ -95,7 +91,7 @@ export default function Id() {
           }
     
           const updatedTodo = await response.json();
-          console.log("this is updatedTodo: " + JSON.stringify(updatedTodo));
+        //   console.log("this is updatedTodo: " + JSON.stringify(updatedTodo));
 
           setTodoItem(updatedTodo);
           setIsEditing(false);
@@ -118,7 +114,7 @@ export default function Id() {
           }
       
           const deletedTodo = await response.json();
-          console.log('Deleted todo item:', deletedTodo);
+          //console.log('Deleted todo item:', deletedTodo);
       
           // Redirect back to the todos list
           router.push('/todos');

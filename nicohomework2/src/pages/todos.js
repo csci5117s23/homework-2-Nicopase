@@ -83,7 +83,6 @@ export default function Todos() {
           // Update the todo list with the newly added todo item
           setTodoList([ todos, ...todoList]);
       
-          // Clear the input and hide it
           setNewItem('');
           setInputVisible(false);
           setIconVisible(true);
@@ -93,8 +92,8 @@ export default function Todos() {
     }
 
     async function updateTodoItem(id, completed) {
-        console.log("this is id: " + id);
-        console.log("this is completed: " + JSON.stringify({completed}));
+        // console.log("this is id: " + id);
+        // console.log("this is completed: " + JSON.stringify({completed}));
         const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT}/${id}`, {

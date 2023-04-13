@@ -9,7 +9,6 @@ export default function Done() {
     const { getToken } = useAuth();
     const router = useRouter();
 
-    const API_ENDPOINT = 'https://backend-w2cd.api.codehooks.io/dev/done';
     const API_ENDPOINT_COMPLETED = 'https://backend-w2cd.api.codehooks.io/dev/todos';
     const API_ENDPOINT_GET = 'https://backend-w2cd.api.codehooks.io/dev/done?userId=';
 
@@ -29,8 +28,11 @@ export default function Done() {
             headers: {'Authorization': 'Bearer ' + authToken}
             });
           const todos = await response.json();
-          console.log(todos)
-          setTodoList(todos);
+          //console.log(todos)
+          const sortedTodos = todos.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setTodoList(sortedTodos);
         } catch (error) {
           console.error('Failed to fetch todos:', error);
         }
@@ -48,8 +50,8 @@ export default function Done() {
     )
 
     async function updateCompletion(id, completed) {
-        console.log("this is id: " + id);
-        console.log("this is completed: " + JSON.stringify({completed}));
+        // console.log("this is id: " + id);
+        // console.log("this is completed: " + JSON.stringify({completed}));
         const authToken = await getToken({ template: "codehooks" });
         try {
             const response = await fetch(`${API_ENDPOINT_COMPLETED}/${id}`, {
